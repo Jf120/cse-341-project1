@@ -33,6 +33,9 @@ const getAll = async (req, res) => {
 
 const getSingle = async (req, res) => {
     try {
+        if (!ObjectId.isValid(req.params.id)) {
+            res.status(400).json({ error: 'Invalid ID' });
+        }
         const userId = new ObjectId(req.params.id);
         const result = await mongodb.getDatabase().db().collection('users').find({ _id: userId });
         const users = await result.toArray();
@@ -80,6 +83,9 @@ const updateUser = async (req, res) => {
 };
 
 const deleteUser = async (req, res) => {
+    if (!ObjectId.isValid(req.params.id)) {
+        res.status(400).json({ error: 'Invalid ID' });
+    }
     const userId = new ObjectId(req.params.id);
     const response = await mongodb.getDatabase().db().collection('users').deleteOne({ _id: userId });
     if (response.deletedCount > 0) {
